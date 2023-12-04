@@ -8,7 +8,6 @@ import PrivateRoute from "./Helper/privateRoute";
 import UnAuthorised from "./Components/Error/error";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "./Helper/auth";
-import User from "./Components/User/User";
 
 function App() {
   const LocalAuthorized = isAuthenticated();
@@ -29,7 +28,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path ="/user" element={<User></User>}></Route>
         <Route path="*" element={<UnAuthorised />} />
       </Routes>
     </BrowserRouter>
