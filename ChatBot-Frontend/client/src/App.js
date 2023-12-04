@@ -29,7 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path ="/user" element={<User></User>}></Route>
+        <Route path="/user" element={<User></User>}></Route>
         <Route path="*" element={<UnAuthorised />} />
       </Routes>
     </BrowserRouter>

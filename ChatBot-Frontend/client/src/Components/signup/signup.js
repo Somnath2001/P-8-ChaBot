@@ -25,8 +25,9 @@ import { API } from "../../backend";
 
 const Signup = () => {
   const { user, token } = isAuthenticated();
+  const accessRole = ["ROLE_USER", "ROLE_ADMIN", "ROLE_SUPPORT"];
   const [values, setValues] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -34,10 +35,11 @@ const Signup = () => {
     success: false,
     error: "",
     didRedirect: false,
+    roles: accessRole[0],
   });
 
   const {
-    name,
+    username,
     email,
     password,
     confirmPassword,
@@ -45,6 +47,7 @@ const Signup = () => {
     success,
     error,
     didRedirect,
+    roles,
   } = values;
 
   useEffect(() => {
@@ -68,7 +71,7 @@ const Signup = () => {
   const onSubmit = (event) => {
     event.preventDefault();
     if (
-      name === "" ||
+      username === "" ||
       email === "" ||
       password === "" ||
       confirmPassword === ""
@@ -93,16 +96,17 @@ const Signup = () => {
         });
 
         signup({
-          name,
+          username,
           email,
           password,
+          roles,
         })
           .then((data) => {
             console.log(data);
-            if (data.error) {
+            if (data.status === 500) {
               setValues({
                 ...values,
-                name: "",
+                username: "",
                 email: "",
                 password: "",
                 confirmPassword: "",
@@ -110,7 +114,7 @@ const Signup = () => {
                 error: "",
               });
               if (data.error) {
-                toast.error(data.error, {
+                toast.error(data.message, {
                   onClose: () => {
                     window.location.href = "/signup";
                   },
@@ -120,18 +124,16 @@ const Signup = () => {
                 });
               }
             } else {
-              authenticate(data, () => {
-                setValues({
-                  ...values,
-                  name: "",
-                  email: "",
-                  password: "",
-                  confirmPassword: "",
-                  error: "",
-                  loading: false,
-                  success: true,
-                  didRedirect: true,
-                });
+              setValues({
+                ...values,
+                username: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+                error: "",
+                loading: false,
+                success: true,
+                didRedirect: true,
               });
             }
           })
@@ -144,46 +146,47 @@ const Signup = () => {
 
   if (loading) {
     return (
-      <div className="loader">
+      <div classusername="loader">
         {" "}
         <SyncLoader type="TailSpin" color="#FFFFFF" height={100} width={60} />
       </div>
     );
   }
-  if (isAuthenticated() && didRedirect && success) {
-    const id = user._id;
-    toast.success("Account created successfully", {
-      closeButton: false,
-    });
-    return <Navigate to={`/nlp-processor`} />;
-  }
 
-  function setWithExpiry(key, value, ttl = 14400000) {
-    const now = new Date();
-    const item = {
-      googleAuthValue: value,
-      expiry: now.getTime() + ttl,
-    };
-    console.log(item.expiry);
-    localStorage.setItem(key, JSON.stringify(item));
-  }
+  // if (isAuthenticated() && didRedirect && success) {
+  //   const id = user._id;
+  //   toast.success("Account created successfully", {
+  //     closeButton: false,
+  //   });
+  //   return <Navigate to={`/nlp-processor`} />;
+  // }
 
-  const googleauthhandle = () => {
-    window.open(`${API}/auth/google`, "_self");
-    // window.localStorage.setItem("googleAuthorised", "true");
-    GoogleAuthChecker().then((res) => {
-      console.log(res);
-      // window.localStorage.setItem("googleAuthorised", res.googleAuthorised);
-      setWithExpiry("googleAuthorised", res.googleAuthorised);
-    });
-  };
+  // function setWithExpiry(key, value, ttl = 14400000) {
+  //   const now = new Date();
+  //   const item = {
+  //     googleAuthValue: value,
+  //     expiry: now.getTime() + ttl,
+  //   };
+  //   console.log(item.expiry);
+  //   localStorage.setItem(key, JSON.stringify(item));
+  // }
+
+  // const googleauthhandle = () => {
+  //   window.open(`${API}/auth/google`, "_self");
+  //   // window.localStorage.setItem("googleAuthorised", "true");
+  //   GoogleAuthChecker().then((res) => {
+  //     console.log(res);
+  //     // window.localStorage.setItem("googleAuthorised", res.googleAuthorised);
+  //     setWithExpiry("googleAuthorised", res.googleAuthorised);
+  //   });
+  // };
 
   return (
     <div>
-      <div className="main">
-        <div className="signupImg"></div>
-        <div className="signupForm">
-          <div className="detail">
+      <div classusername="main">
+        <div classusername="signupImg"></div>
+        <div classusername="signupForm">
+          <div classusername="detail">
             <h5>START FOR FREE</h5>
             <h2>Create new account</h2>
 
@@ -197,25 +200,25 @@ const Signup = () => {
             id="outlined-basic"
             label="Email"
             variant="outlined"
-            className="input"
+            classusername="input"
             size="small"
             value={email}
             onChange={handleChange("email")}
           />
           <TextField
             id="outlined-basic"
-            label="Name"
+            label="username"
             variant="outlined"
-            className="input"
+            classusername="input"
             size="small"
-            value={name}
-            onChange={handleChange("name")}
+            value={username}
+            onChange={handleChange("username")}
           />
           <TextField
             id="outlined-basic"
             label="Password"
             variant="outlined"
-            className="input"
+            classusername="input"
             size="small"
             type="password"
             value={password}
@@ -225,7 +228,7 @@ const Signup = () => {
             id="outlined-basic"
             label="ConfirmPassword"
             variant="outlined"
-            className="input"
+            classusername="input"
             size="small"
             type="password"
             value={confirmPassword}
@@ -235,15 +238,15 @@ const Signup = () => {
           <Stack spacing={2} direction="column">
             <Button
               variant="contained"
-              className="inputBtn1"
+              classusername="inputBtn1"
               onClick={onSubmit}
             >
               signup
             </Button>
             <Button
               variant="contained"
-              className="inputBtn2"
-              onClick={googleauthhandle}
+              classusername="inputBtn2"
+              // onClick={googleauthhandle}
             >
               <p>
                 {" "}

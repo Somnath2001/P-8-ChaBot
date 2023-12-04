@@ -1,7 +1,7 @@
 const { API } = require("../backend");
 
 export const signup = (user) => {
-  return fetch(`${API}/signup`, {
+  return fetch(`${API}/auth/addNewUser`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -17,7 +17,7 @@ export const signup = (user) => {
 };
 
 export const signin = (user) => {
-  return fetch(`${API}/signin`, {
+  return fetch(`${API}/auth/generateToken`, {
     method: "POST",
     credentials: "include",
     headers: {
