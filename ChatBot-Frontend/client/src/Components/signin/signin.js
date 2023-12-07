@@ -24,7 +24,7 @@ import { API } from "../../backend";
 
 const Signin = () => {
   const [values, setValues] = useState({
-    email: "",
+    username: "",
     password: "",
     loading: false,
     error: "",
@@ -33,7 +33,7 @@ const Signin = () => {
 
   const { user } = isAuthenticated();
 
-  const { email, password, loading, error, didRedirect } = values;
+  const { username, password, loading, error, didRedirect } = values;
 
   useEffect(() => {
     window.history.forward();
@@ -53,11 +53,11 @@ const Signin = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    if (email === "" && password === "") {
-      setValues({ ...values, error: "please enter email and password" });
+    if (username === "" && password === "") {
+      setValues({ ...values, error: "please enter username and password" });
     } else {
       setValues({ ...values, error: "", loading: true });
-      signin({ email, password })
+      signin({ username, password })
         .then((data) => {
           console.log(data);
           // console.log(data.error);
@@ -66,7 +66,7 @@ const Signin = () => {
               ...values,
               error: data.error,
               loading: false,
-              email: "",
+              username: "",
               password: "",
             });
           } else {
@@ -75,7 +75,7 @@ const Signin = () => {
                 ...values,
                 loading: false,
                 didRedirect: true,
-                email: "",
+                username: "",
                 password: "",
               });
             });
@@ -97,28 +97,27 @@ const Signin = () => {
   }
 
   if (isAuthenticated() && didRedirect) {
-    // const id = user._id;
-    return <Navigate to={`/nlp-processor`} />;
+    return <Navigate to={`/userchat`} />;
   }
-  function setWithExpiry(key, value, ttl = 14400000) {
-    const now = new Date();
-    const item = {
-      googleAuthValue: value,
-      expiry: now.getTime() + ttl,
-    };
-    console.log(item.expiry);
-    localStorage.setItem(key, JSON.stringify(item));
-  }
+  // function setWithExpiry(key, value, ttl = 14400000) {
+  //   const now = new Date();
+  //   const item = {
+  //     googleAuthValue: value,
+  //     expiry: now.getTime() + ttl,
+  //   };
+  //   console.log(item.expiry);
+  //   localStorage.setItem(key, JSON.stringify(item));
+  // }
 
-  const googleauthhandle = () => {
-    window.open(`${API}/auth/google`, "_self");
-    // window.localStorage.setItem("googleAuthorised", "true");
-    GoogleAuthChecker().then((res) => {
-      console.log(res);
-      // window.localStorage.setItem("googleAuthorised", res.googleAuthorised);
-      setWithExpiry("googleAuthorised", res.googleAuthorised);
-    });
-  };
+  // const googleauthhandle = () => {
+  //   window.open(`${API}/auth/google`, "_self");
+  //   // window.localStorage.setItem("googleAuthorised", "true");
+  //   GoogleAuthChecker().then((res) => {
+  //     console.log(res);
+  //     // window.localStorage.setItem("googleAuthorised", res.googleAuthorised);
+  //     setWithExpiry("googleAuthorised", res.googleAuthorised);
+  //   });
+  // };
 
   return (
     <div>
@@ -137,12 +136,12 @@ const Signin = () => {
 
           <TextField
             id="outlined-basic"
-            label="Email"
+            label="username"
             variant="outlined"
             className="input"
             size="small"
-            value={email}
-            onChange={handleChange("email")}
+            value={username}
+            onChange={handleChange("username")}
           />
           <TextField
             id="outlined-basic"
@@ -166,7 +165,7 @@ const Signin = () => {
             <Button
               variant="contained"
               className="signinInputBtn2"
-              onClick={googleauthhandle}
+              // onClick={googleauthhandle}
             >
               <p>
                 {" "}

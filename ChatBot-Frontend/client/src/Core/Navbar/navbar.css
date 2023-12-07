@@ -19,7 +19,7 @@
 }
 
 .logo {
-  height: 60px;
+  height: 100px;
   width: 250px;
 }
 
@@ -28,7 +28,7 @@
     display: none;
   }
   .logo {
-    height: 60px;
+    height: 100px;
     width: 250px;
   }
 }

@@ -23,13 +23,7 @@ function getItemWithExpiry(key) {
 const PrivateRoute = ({ children }) => {
   const LocalAuthorized = isAuthenticated();
 
-  console.log(LocalAuthorized);
-
-  const GoogleAuthSecure = getItemWithExpiry("googleAuthorised");
-
-  console.log(GoogleAuthSecure);
-
-  return LocalAuthorized || GoogleAuthSecure ? children : <Navigate to="/" />;
+  return LocalAuthorized ? children : <Navigate to="/signin" />;
 };
 
 export default PrivateRoute;

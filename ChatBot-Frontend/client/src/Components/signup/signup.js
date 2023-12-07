@@ -25,7 +25,7 @@ import { API } from "../../backend";
 
 const Signup = () => {
   const { user, token } = isAuthenticated();
-  const accessRole = ["ROLE_USER", "ROLE_ADMIN", "ROLE_SUPPORT"];
+  let userroles = ["ROLE_USER", "ROLE_ADMIN", "ROLE_SUPPORT"];
   const [values, setValues] = useState({
     username: "",
     email: "",
@@ -35,10 +35,11 @@ const Signup = () => {
     success: false,
     error: "",
     didRedirect: false,
-    roles: accessRole[0],
+    roles: userroles[0],
   });
 
   const {
+    roles,
     username,
     email,
     password,
@@ -47,7 +48,6 @@ const Signup = () => {
     success,
     error,
     didRedirect,
-    roles,
   } = values;
 
   useEffect(() => {
@@ -106,27 +106,35 @@ const Signup = () => {
             if (data.status === 500) {
               setValues({
                 ...values,
-                username: "",
+                name: "",
                 email: "",
                 password: "",
                 confirmPassword: "",
                 loading: false,
                 error: "",
               });
-              if (data.error) {
-                toast.error(data.message, {
-                  onClose: () => {
-                    window.location.href = "/signup";
-                  },
-                  autoClose: 1000,
-                  limit: 1,
-                  hideProgressBar: false,
-                });
-              }
+
+              toast.error(data.message, {
+                onClose: () => {
+                  window.location.href = "/signup";
+                },
+                autoClose: 1000,
+                limit: 1,
+                hideProgressBar: false,
+              });
             } else {
+              // authenticate(data, () => {
+              toast.success(data.message, {
+                onClose: () => {
+                  window.location.href = "/signin";
+                },
+                autoClose: 1000,
+                limit: 1,
+                hideProgressBar: false,
+              });
               setValues({
                 ...values,
-                username: "",
+                name: "",
                 email: "",
                 password: "",
                 confirmPassword: "",
@@ -135,6 +143,7 @@ const Signup = () => {
                 success: true,
                 didRedirect: true,
               });
+              // });
             }
           })
           .catch((err) => {
@@ -146,13 +155,12 @@ const Signup = () => {
 
   if (loading) {
     return (
-      <div classusername="loader">
+      <div className="loader">
         {" "}
         <SyncLoader type="TailSpin" color="#FFFFFF" height={100} width={60} />
       </div>
     );
   }
-
   // if (isAuthenticated() && didRedirect && success) {
   //   const id = user._id;
   //   toast.success("Account created successfully", {
@@ -183,10 +191,10 @@ const Signup = () => {
 
   return (
     <div>
-      <div classusername="main">
-        <div classusername="signupImg"></div>
-        <div classusername="signupForm">
-          <div classusername="detail">
+      <div className="main">
+        <div className="signupImg"></div>
+        <div className="signupForm">
+          <div className="detail">
             <h5>START FOR FREE</h5>
             <h2>Create new account</h2>
 
@@ -200,16 +208,16 @@ const Signup = () => {
             id="outlined-basic"
             label="Email"
             variant="outlined"
-            classusername="input"
+            className="input"
             size="small"
             value={email}
             onChange={handleChange("email")}
           />
           <TextField
             id="outlined-basic"
-            label="username"
+            label="Name"
             variant="outlined"
-            classusername="input"
+            className="input"
             size="small"
             value={username}
             onChange={handleChange("username")}
@@ -218,7 +226,7 @@ const Signup = () => {
             id="outlined-basic"
             label="Password"
             variant="outlined"
-            classusername="input"
+            className="input"
             size="small"
             type="password"
             value={password}
@@ -228,7 +236,7 @@ const Signup = () => {
             id="outlined-basic"
             label="ConfirmPassword"
             variant="outlined"
-            classusername="input"
+            className="input"
             size="small"
             type="password"
             value={confirmPassword}
@@ -238,14 +246,14 @@ const Signup = () => {
           <Stack spacing={2} direction="column">
             <Button
               variant="contained"
-              classusername="inputBtn1"
+              className="inputBtn1"
               onClick={onSubmit}
             >
               signup
             </Button>
             <Button
               variant="contained"
-              classusername="inputBtn2"
+              className="inputBtn2"
               // onClick={googleauthhandle}
             >
               <p>

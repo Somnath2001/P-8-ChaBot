@@ -3,7 +3,7 @@ const { API } = require("../backend");
 export const signup = (user) => {
   return fetch(`${API}/auth/addNewUser`, {
     method: "POST",
-    credentials: "include",
+    // credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export const signup = (user) => {
 export const signin = (user) => {
   return fetch(`${API}/auth/generateToken`, {
     method: "POST",
-    credentials: "include",
+    // credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -34,21 +34,15 @@ export const signin = (user) => {
 
 export const authenticate = (data, next) => {
   if (typeof window !== "undefined") {
-    localStorage.setItem("jwt", JSON.stringify(data));
+    localStorage.setItem("userData", JSON.stringify(data));
+    localStorage.setItem("token", JSON.stringify(data.token));
     next();
   }
 };
 
 export const signout = () => {
   if (typeof window !== "undefined") {
-    localStorage.removeItem("jwt");
-    // window.location.reload();
-    return fetch(`${API}/signout`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((response) => console.log(response))
-      .catch((err) => console.log(err));
+    localStorage.removeItem("token");
   }
 };
 
@@ -56,8 +50,8 @@ export const isAuthenticated = () => {
   if (typeof window == "undefined") {
     return false;
   }
-  if (localStorage.getItem("jwt")) {
-    return JSON.parse(localStorage.getItem("jwt"));
+  if (localStorage.getItem("token")) {
+    return JSON.parse(localStorage.getItem("token"));
   } else {
     return false;
   }

@@ -8,18 +8,16 @@ import PrivateRoute from "./Helper/privateRoute";
 import UnAuthorised from "./Components/Error/error";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "./Helper/auth";
-import User from "./Components/User/User";
+import Userchat from "./Components/Userchat/Userchat";
 
 function App() {
   const LocalAuthorized = isAuthenticated();
 
-  const GoogleAuthSecure = localStorage.getItem("googleAuthorised");
-
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    if (LocalAuthorized || GoogleAuthSecure) {
-      setToken(LocalAuthorized || GoogleAuthSecure);
+    if (LocalAuthorized) {
+      setToken(LocalAuthorized);
     }
   }, []);
 
@@ -29,7 +27,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/user" element={<User></User>}></Route>
+        <Route path="/userchat" element={<Userchat />} />
         <Route path="*" element={<UnAuthorised />} />
       </Routes>
     </BrowserRouter>

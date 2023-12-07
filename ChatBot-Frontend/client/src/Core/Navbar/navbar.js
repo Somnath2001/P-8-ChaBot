@@ -18,14 +18,14 @@ import {
 import "./navbar.css";
 import { motion } from "framer-motion";
 import { Twirl as Hamburger } from "hamburger-react";
-import LOGO from "../../Assets/chatlogo2.png";
+import LOGO from "../../Assets/face.jpeg";
 
 // const styles = StyleSheet.create({
 //   fadeInDown: {
 //     animationName: zoomIn,
 //     animationDuration: "3s",
 //   },
-// });
+// })
 
 const Navbars = () => {
   const [isOpen, setIsOpen] = useState(false);
