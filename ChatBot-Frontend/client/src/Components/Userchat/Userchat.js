@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "react-chat-elements/dist/main.css";
 import { MessageBox } from "react-chat-elements";
 import SendIcon from "@mui/icons-material/Send";
@@ -14,6 +14,7 @@ import { SyncLoader } from "react-spinners";
 import {
   getAllCategories,
   getAnswerByQuestionId,
+  getMainCategories,
   getQuestions,
   getQuestionsByCategory,
 } from "../../Helper/apicaller";
@@ -108,12 +109,12 @@ const Userchat = () => {
     };
 
     const [selectedDomain, setSelectedDomain] = useState(null);
-    const [selectedQuestion, setSelectedQuestion] = useState(null);
     const [question, setQuestion] = useState([]);
     const [answers, setAnswers] = useState({});
     const [userdata, setUserdata] = useState("");
     const [categories, setCategories] = useState([]);
     const [loader, setLoader] = useState(false);
+    const [selectedQuestions, setSelectedQuestions] = useState("");
 
     // useEffect(() => {
     //   setUserMessage("");
@@ -150,6 +151,7 @@ const Userchat = () => {
         });
         // scrollToBottom();
       });
+      // getMainCategories().then((data)=>{console.log})
       // getQuestions()
       //   .then((data) => {
       //     setQuestion(data);
@@ -160,101 +162,15 @@ const Userchat = () => {
       //   });
     }, []);
 
-    const handleDomainChange = (domain) => {
-      setSelectedDomain(domain);
-      setSelectedQuestion(null);
-      setAnswers({});
+    const Logout = () => {
+      signout();
+      return (window.location.href = "/signin");
     };
-
-    const handleQuestionChange = (question) => {
-      setSelectedQuestion(question);
-
-      console.log(userdata);
-
-      let answer;
-      switch (question) {
-        case "Do you have a genuine interest in healthcare and helping people?":
-          answer =
-            "Medicine is a service-oriented profession where you directly contribute to improving peoples health.";
-          break;
-        case "Are you comfortable with a more extended period of education and training?":
-          answer =
-            "Medical education and training typically take a significant number of years.";
-          break;
-        case "Do you have strong empathy and communication skills?":
-          answer =
-            "Good communication and empathy are essential for interactions with patients and colleagues.";
-          break;
-        case "Are you able to handle stress and pressure well?":
-          answer =
-            "Medical professionals often face high-pressure situations, and resilience is crucial.";
-          break;
-        case "Are you interested in a profession where continuous learning is a norm?":
-          answer =
-            "Medicine requires staying updated with the latest advancements in healthcare.";
-          break;
-
-        case "Are you interested in technology and problem-solving?":
-          answer =
-            "Engineering often involves applying scientific principles to design and build solutions.";
-          break;
-        case "Do you enjoy mathematics and science subjects?":
-          answer =
-            "Engineering programs usually require a strong foundation in mathematics and sciences.";
-          break;
-        case "Are you interested in creating and innovating new technologies?":
-          answer =
-            "Engineers play a crucial role in developing new products, systems, and technologies.";
-          break;
-        case "Do you prefer hands-on, practical work?":
-          answer =
-            "Engineering often involves practical applications and projects.";
-          break;
-        case "Are you open to continuous learning and adapting to new technologies?":
-          answer =
-            "Technology evolves rapidly, and engineers need to stay updated.";
-          break;
-
-        case "Are you interested in business, management, and leadership roles?":
-          answer =
-            "MBA programs focus on developing business and managerial skills.";
-          break;
-        case "Do you have an interest in strategy, finance, marketing, or entrepreneurship?":
-          answer =
-            "MBA programs offer specializations in various business areas.";
-          break;
-        case "Do you enjoy working in a dynamic and diverse environment?":
-          answer =
-            "Business environments often involve dealing with diverse teams and challenges.";
-          break;
-        case "Are you interested in climbing the corporate ladder or starting your own business?":
-          answer =
-            "An MBA can open doors to leadership positions and entrepreneurship.";
-          break;
-        case "Do you have strong interpersonal and leadership skills?":
-          answer =
-            "MBA programs often seek individuals with leadership potential.";
-          break;
-
-        default:
-          answer = "Default answer logic here.";
-          break;
-      }
-
-      setAnswers((prevAnswers) => ({
-        ...prevAnswers,
-        [question]: answer,
-      }));
-    };
-
-    if (!isAuthenticated()) {
-      return <Navigate to={`/signin`} />;
-    }
 
     const handlelogic = (category) => {
       getQuestionsByCategory(category).then((data) => {
-        console.log(data);
         setMessages(() => []);
+        setSelectedQuestions(data);
         data.forEach((que) => {
           setMessages((oldArray) => [
             ...oldArray,
@@ -269,9 +185,12 @@ const Userchat = () => {
       });
     };
 
-    let feedback = ["Satisfied 🙂", "NotSatisfied 🙁"];
+    let feedback = ["Yes 🙂", "No 🙁"];
 
     const handleAnswerlogic = (queId) => {
+      setSelectedQuestions((questions) =>
+        questions.filter((question) => question.id !== queId)
+      );
       getAnswerByQuestionId(queId).then((data) => {
         console.log(data);
         setMessages(() => []);
@@ -290,7 +209,7 @@ const Userchat = () => {
             ...oldArray,
             {
               title: bot,
-              txt: "please give your feedback 🥹",
+              txt: "Are you satisfied with this answer 🥹",
               modified: true,
             },
           ]);
@@ -313,7 +232,7 @@ const Userchat = () => {
 
     const handlefeedback = (feed) => {
       switch (feed) {
-        case "Satisfied 🙂":
+        case "Yes 🙂":
           setMessages(() => [
             {
               title: bot,
@@ -331,15 +250,31 @@ const Userchat = () => {
           );
           break;
 
-        case "NotSatisfied 🙁":
-          setMessages(() => [
-            {
-              title: bot,
-              txt: "🥹 Apologize for our answers. you will be connecting to our support agent...",
-              modified: true,
-            },
-          ]);
-          setLoader(true);
+        case "No 🙁":
+          if (selectedQuestions.length === 0) {
+            setMessages(() => [
+              {
+                title: bot,
+                txt: "🥹 Apologize for our answers. you will be connecting to our support agent...",
+                modified: true,
+              },
+            ]);
+            setLoader(true);
+          } else {
+            setMessages(() => []);
+            selectedQuestions.forEach((que) => {
+              setMessages((oldArray) => [
+                ...oldArray,
+                {
+                  title: "",
+                  txt: que.content,
+                  modified: true,
+                  queId: que.id,
+                },
+              ]);
+            });
+          }
+
           break;
 
         default:
@@ -347,17 +282,26 @@ const Userchat = () => {
       }
     };
 
+    if (!isAuthenticated()) {
+      return <Navigate to={`/signin`} />;
+    }
+
     return (
       <div className="App">
         <div className="chat-container">
           <div className="messages-container" id="message-container">
             <div className="header">
               <div>
-                <img src={BOTAVT} className="botavt" /> &nbsp;
+                <img src={BOTAVT} className="botavt" alt="logo" /> &nbsp;
                 <b>ChatSupport</b>
               </div>
               <div style={{ marginRight: "10px" }}>
-                <img src={LOGOUT} className="botavt" />
+                <img
+                  src={LOGOUT}
+                  className="botavt"
+                  alt="logout"
+                  onClick={Logout}
+                />
               </div>
             </div>
             {messages.map((msg) => {
@@ -423,17 +367,17 @@ const Userchat = () => {
     <>
       <BotProcessHandle />
       <ToastContainer
+        limit={1}
         position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
+        autoClose={2000}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        closeButton={false}
-        limit={1}
+        closeButton={true}
       />
     </>
   );

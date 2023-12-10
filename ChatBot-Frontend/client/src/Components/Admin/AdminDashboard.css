@@ -1,0 +1,12 @@
+.container {
+  background-color: aliceblue;
+  height: 700px;
+  padding: 50px;
+  border-radius: 20px;
+  overflow: scroll;
+}
+.usercontainer {
+  overflow: scroll;
+  height: 500px;
+  border-radius: 20px;
+}

@@ -18,6 +18,7 @@ import {
   isAuthenticated,
   authenticate,
   GoogleAuthChecker,
+  checkisAdmin,
 } from "../../Helper/auth";
 import { SyncLoader } from "react-spinners";
 import { API } from "../../backend";
@@ -96,28 +97,19 @@ const Signin = () => {
     );
   }
 
-  if (isAuthenticated() && didRedirect) {
+  if (
+    isAuthenticated() &&
+    didRedirect &&
+    JSON.parse(localStorage.getItem("role")) === "ROLE_USER"
+  ) {
     return <Navigate to={`/userchat`} />;
+  } else if (
+    isAuthenticated() &&
+    didRedirect &&
+    JSON.parse(localStorage.getItem("role")) === "ROLE_ADMIN"
+  ) {
+    return <Navigate to={`/admin`} />;
   }
-  // function setWithExpiry(key, value, ttl = 14400000) {
-  //   const now = new Date();
-  //   const item = {
-  //     googleAuthValue: value,
-  //     expiry: now.getTime() + ttl,
-  //   };
-  //   console.log(item.expiry);
-  //   localStorage.setItem(key, JSON.stringify(item));
-  // }
-
-  // const googleauthhandle = () => {
-  //   window.open(`${API}/auth/google`, "_self");
-  //   // window.localStorage.setItem("googleAuthorised", "true");
-  //   GoogleAuthChecker().then((res) => {
-  //     console.log(res);
-  //     // window.localStorage.setItem("googleAuthorised", res.googleAuthorised);
-  //     setWithExpiry("googleAuthorised", res.googleAuthorised);
-  //   });
-  // };
 
   return (
     <div>

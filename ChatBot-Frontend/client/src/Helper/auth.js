@@ -36,6 +36,7 @@ export const authenticate = (data, next) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("userData", JSON.stringify(data));
     localStorage.setItem("token", JSON.stringify(data.token));
+    localStorage.setItem("role", JSON.stringify(data.roles[0]));
     next();
   }
 };

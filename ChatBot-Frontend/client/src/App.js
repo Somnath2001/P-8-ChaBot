@@ -9,6 +9,7 @@ import UnAuthorised from "./Components/Error/error";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "./Helper/auth";
 import Userchat from "./Components/Userchat/Userchat";
+import AdminDashboard from "./Components/Admin/AdminDashboard";
 
 function App() {
   const LocalAuthorized = isAuthenticated();
@@ -28,6 +29,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/userchat" element={<Userchat />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="*" element={<UnAuthorised />} />
       </Routes>
     </BrowserRouter>
